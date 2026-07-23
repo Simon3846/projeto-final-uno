@@ -10,7 +10,7 @@ public class GerenciadorJogo {
     private List <Jogador> jogadores;
     private Baralho baralho;
     private Stack<Carta> descarte;
-    private int jogadorAtualIndex;
+    private int indiceJogadorAtual;
     private boolean sentidoHorario;
 
     public GerenciadorJogo(List<String> nomesJogadores, Baralho baralhoEscolhido){
@@ -22,7 +22,7 @@ public class GerenciadorJogo {
 
         this.baralho = baralhoEscolhido;
         this.descarte = new Stack<>();
-        this.jogadorAtualIndex = 0;
+        this.indiceJogadorAtual = 0;
         this.sentidoHorario = true;
 
         iniciarPartida();
@@ -40,6 +40,78 @@ public class GerenciadorJogo {
         // Colocar a primeira carta no descarte
         Carta cartaInicial = baralho.comprarCarta();
         descarte.push(cartaInicial);
+    }
+
+    public Jogador getJogadorAtual(){
+        return jogadores.get(indiceJogadorAtual);
+    }
+
+    public Carta getCartaTopo(){
+        return descarte.peek();
+    }
+
+    // passa a vez para o próximo jogador, considerando o sentido do jogo
+    public void proximoTurno(){
+        int passo = sentidoHorario ? 1 : -1;
+        indiceJogadorAtual = (indiceJogadorAtual + passo + jogadores.size()) % jogadores.size();
+    }
+
+    // Ação: Tentar jogar uma carta na mão do jogador atual
+    public boolean jogarCarta(Jogador jogador, Carta carta){
+        if(!jogador.equals(getJogadorAtual())){
+            return false; // Não é a vez deste jogador
+        }
+
+        if(carta.podeSerJogadaSobre(carta)){
+            jogador.removerCarta(carta);
+            descarte.push(carta); // adiciona a carta ao topo do descarte
+
+            carta.aplicarEfeito(this); // Aplica o efeito da carta, se houver
+            return true;
+        }
+
+        return false; // A carta não pode ser jogada
+    }
+
+    public Carta comprarCarta(Jogador jogador){
+        // Verifica se é a vez do jogador
+        if(!jogador.equals(getJogadorAtual())){
+            return null;
+        }
+
+        Carta NovaCarta = baralho.comprarCarta();
+        if(NovaCarta != null){
+            jogador.adicionarCarta(NovaCarta);
+        }
+
+        return NovaCarta;
+    }
+
+    public void pularVez(){
+        proximoTurno(); // Pula o jogador atual
+    }
+
+    public void inverterSentido(){
+        sentidoHorario = !sentidoHorario;
+    }
+
+    public void focarCartas(int quantidade){
+
+        int passo = sentidoHorario ? 1 : -1;
+        int proximoIndice = (indiceJogadorAtual + passo + jogadores.size()) % jogadores.size();
+
+        Jogador proximo = jogadores.get(proximoIndice);
+
+        for(int i = 0; i < quantidade; i++){
+            Carta c = baralho.comprarCarta();
+            if(c != null){
+                proximo.adicionarCarta(c);
+            }
+        }
+    }
+
+    public List<Jogador> getJogadores(){
+        return jogadores;
     }
 
 }

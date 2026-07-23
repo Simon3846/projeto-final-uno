@@ -1,5 +1,7 @@
 package modelo;
 
+import controle.GerenciadorJogo;
+
 public class CartaAcao extends Carta {
 
     public CartaAcao(String cor, String valor){
