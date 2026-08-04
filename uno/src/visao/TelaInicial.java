@@ -81,11 +81,10 @@ public class TelaInicial extends JFrame{
 
         // Fecha esta tela e abre a tela do jogo
         this.dispose();
-
-        // TO DO: TelaJogo telaJogo = new TelaJogo(gerenciador);
-        // telaJogo.setVisible(true);
-
-        JOptionPane.showMessageDialog(null, "Jogo iniciado com sucesso! (Tela do jogo ainda não implementada)");
+        
+        // Cria e exibe a tela principal do jogo
+        TelaJogo telaJogo = new TelaJogo(gerenciador);
+        telaJogo.setVisible(true);
 
     }
 
