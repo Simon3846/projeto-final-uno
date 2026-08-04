@@ -57,16 +57,20 @@ public class GerenciadorJogo {
     }
 
     // Ação: Tentar jogar uma carta na mão do jogador atual
-    public boolean jogarCarta(Jogador jogador, Carta carta){
-        if(!jogador.equals(getJogadorAtual())){
+    public boolean jogarCarta(Jogador jogador, Carta carta) {
+        if (!jogador.equals(getJogadorAtual())) {
             return false; // Não é a vez deste jogador
         }
 
-        if(carta.podeSerJogadaSobre(carta)){
-            jogador.removerCarta(carta);
-            descarte.push(carta); // adiciona a carta ao topo do descarte
+        // Pega a carta que está no topo do descarte (mesa)
+        Carta topo = getCartaTopo();
 
-            carta.aplicarEfeito(this); // Aplica o efeito da carta, se houver
+        // Compara a carta da mão COM A CARTA DO TOPO
+        if (carta.podeSerJogadaSobre(topo)) {
+            jogador.removerCarta(carta);
+            descarte.push(carta); // Adiciona a carta ao topo do descarte
+
+            carta.aplicarEfeito(this); // Aplica o efeito da carta (pular, inverter, +2, +4)
             return true;
         }
 
