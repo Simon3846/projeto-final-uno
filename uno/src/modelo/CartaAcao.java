@@ -10,7 +10,7 @@ public class CartaAcao extends Carta {
 
     @Override
     public void aplicarEfeito(Object jogo){
-        // TODO: Quando criarmos a classe do Jogo, vamos programar os efeitos aqui:
+        // TO DO: Quando criarmos a classe do Jogo, vamos programar os efeitos aqui:
         // Se for "Pular" -> jogo.pularVez();
         // Se for "Inverter" -> jogo.inverterSentido();
         // Se for "+2" -> jogo.comprarCartasParaProximo(2);
