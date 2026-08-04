@@ -1,6 +1,6 @@
 package modelo;
 
-import controle.GerenciadorJogo;
+//import controle.GerenciadorJogo;
 
 public class CartaAcao extends Carta {
 

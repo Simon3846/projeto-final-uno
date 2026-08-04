@@ -10,5 +10,6 @@ public class CartaNormal extends Carta{
     public void aplicarEfeito(Object jogo){
         // Cartas normais não alteram o fluxo do jogo, apenas são descartadas.
         // O efeito é "vazio".
+        
     }
 }
