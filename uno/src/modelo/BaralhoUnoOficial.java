@@ -25,7 +25,13 @@ public class BaralhoUnoOficial extends Baralho{
                 cartas.add(new CartaAcao(cor, "Inverter"));
                 cartas.add(new CartaAcao(cor,"+2"));
             }
-        // Em um passo futuro, adicionar os Coringas (Wild) aqui!
+        
+
+        // Cartas Coringa do UNO (4 de cada)
+        for (int i = 0; i < 4; i++) {
+            cartas.add(new CartaCoringa("Coringa"));
+            cartas.add(new CartaCoringa("+4"));
+        }
         
         }
     }

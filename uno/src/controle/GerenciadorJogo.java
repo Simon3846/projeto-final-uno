@@ -95,7 +95,7 @@ public class GerenciadorJogo {
         sentidoHorario = !sentidoHorario;
     }
 
-    public void focarCartas(int quantidade){
+    public void forcarCartas(int quantidade){
 
         int passo = sentidoHorario ? 1 : -1;
         int proximoIndice = (indiceJogadorAtual + passo + jogadores.size()) % jogadores.size();

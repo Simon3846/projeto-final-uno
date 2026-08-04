@@ -2,6 +2,7 @@ package visao;
 
 import controle.GerenciadorJogo;
 import modelo.Carta;
+import modelo.CartaCoringa;
 import modelo.Jogador;
 
 import javax.swing.*;
@@ -145,23 +146,55 @@ public class TelaJogo extends JFrame {
     }
 
     private void acaoJogarCarta(Carta carta) {
-        Jogador atual = gerenciador.getJogadorAtual();
+    Jogador atual = gerenciador.getJogadorAtual();
 
-        if (gerenciador.jogarCarta(atual, carta)) {
-            if (atual.venceu()) {
-                JOptionPane.showMessageDialog(this, "Parabéns! " + atual.getNome() + " VENCEU O JOGO!");
-                this.dispose();
-                return;
-            }
-            gerenciador.proximoTurno();
-            atualizarTela();
+    // Se a carta for um Coringa, abre a janela para escolher a cor
+    if (carta instanceof modelo.CartaCoringa) {
+        String[] opcoesCores;
+        
+        // Verifica o tipo de baralho na mesa para oferecer os nomes certos (Naipe ou Cor)
+        String corTopo = gerenciador.getCartaTopo().getCor();
+        if (corTopo.equals("Copas") || corTopo.equals("Ouros") || 
+            corTopo.equals("Paus") || corTopo.equals("Espadas")) {
+            opcoesCores = new String[]{"Copas", "Ouros", "Paus", "Espadas"};
         } else {
-            JOptionPane.showMessageDialog(this, 
-                "Jogada Inválida! A carta precisa ter a mesma cor/naipe ou mesmo valor da mesa.", 
-                "Aviso", 
-                JOptionPane.WARNING_MESSAGE);
+            opcoesCores = new String[]{"Vermelho", "Amarelo", "Verde", "Azul"};
         }
+
+        String corSelecionada = (String) JOptionPane.showInputDialog(
+            this,
+            "Escolha a nova cor para o jogo:",
+            "Seleção de Cor (Coringa)",
+            JOptionPane.QUESTION_MESSAGE,
+            null,
+            opcoesCores,
+            opcoesCores[0]
+        );
+
+        // Se o jogador cancelar a escolha, interrompe a jogada
+        if (corSelecionada == null) {
+            return; 
+        }
+
+        ((modelo.CartaCoringa) carta).setCorEscolhida(corSelecionada);
     }
+
+    // Tenta realizar a jogada
+    if (gerenciador.jogarCarta(atual, carta)) {
+        if (atual.venceu()) {
+            JOptionPane.showMessageDialog(this, "Parabéns! " + atual.getNome() + " VENCEU O JOGO!");
+            this.dispose();
+            return;
+        }
+        gerenciador.proximoTurno();
+        atualizarTela();
+    } else {
+        JOptionPane.showMessageDialog(this, 
+            "Jogada Inválida! A carta precisa ter a mesma cor/naipe ou mesmo valor da mesa.", 
+            "Aviso", 
+            JOptionPane.WARNING_MESSAGE);
+    }
+}
 
     private void acaoComprarCarta() {
         Jogador atual = gerenciador.getJogadorAtual();
