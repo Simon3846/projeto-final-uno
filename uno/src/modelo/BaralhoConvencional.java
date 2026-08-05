@@ -15,17 +15,17 @@ public class BaralhoConvencional extends Baralho{
                     cartas.add(new CartaNormal(naipe,String.valueOf(i)));
                 }
 
-            // Adicionando cartas de ação para cada naipe
-            cartas.add(new CartaNormal(naipe, "Pular")); // valete 
-            cartas.add(new CartaNormal(naipe, "Inverter")); // dama
-            cartas.add(new CartaNormal(naipe, "+2")); // rei
-            
+                // Adicionando cartas de ação para cada naipe
+                cartas.add(new CartaNormal(naipe, "Pular")); // valete 
+                cartas.add(new CartaNormal(naipe, "Inverter")); // dama
+                cartas.add(new CartaNormal(naipe, "+2")); // rei
+
+        }
+
             // Jokers como Coringas no baralho comum
             cartas.add(new CartaCoringa("Joker Preto"));
             cartas.add(new CartaCoringa("Joker Preto"));
             cartas.add(new CartaCoringa("Joker Vermelho"));
             cartas.add(new CartaCoringa("Joker Vermelho"));
-
-        }
     }
 }
