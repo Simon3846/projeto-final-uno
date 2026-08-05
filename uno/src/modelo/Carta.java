@@ -26,8 +26,8 @@ public abstract class Carta {
     //Metodo pra verificar se a carta pode ser jogada por cima
     public boolean podeSerJogadaSobre(Carta outra){
         // Um coringa sempre pode ser jogado, ou se tiver a mesma cor, ou mesmo valor
-        return this.cor.equals("Especial") ||
-        outra.getCor().equals("Especial") ||
+        return this.cor.equals("Coringa") ||
+        outra.getCor().equals("Coringa") ||
         this.cor.equals(outra.getCor()) ||
         this.valor.equals(outra.getValor());
 

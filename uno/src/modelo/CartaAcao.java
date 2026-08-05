@@ -1,5 +1,7 @@
 package modelo;
 
+import controle.GerenciadorJogo;
+
 //import controle.GerenciadorJogo;
 
 public class CartaAcao extends Carta {
@@ -10,10 +12,21 @@ public class CartaAcao extends Carta {
 
     @Override
     public void aplicarEfeito(Object jogo){
-        // TO DO: Quando criarmos a classe do Jogo, vamos programar os efeitos aqui:
-        // Se for "Pular" -> jogo.pularVez();
-        // Se for "Inverter" -> jogo.inverterSentido();
-        // Se for "+2" -> jogo.comprarCartasParaProximo(2);
+        GerenciadorJogo gerenciador = (GerenciadorJogo) jogo;
+
+        switch(getValor()){
+            case "Pular":
+                gerenciador.pularVez();
+                break;
+
+            case "Inverter":
+                gerenciador.inverterSentido();
+                break;
+
+            case "+2":
+                gerenciador.forcarCartas(2);
+                break;
+        }
 
         System.out.println("Aplicando o efeito da carta de ação: " + getValor());
     }

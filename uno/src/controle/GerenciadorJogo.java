@@ -69,7 +69,7 @@ public class GerenciadorJogo {
 
     // Metodo responsavel por jogar uma carta
     public boolean jogarCarta(Jogador jogador, Carta carta) {
-        
+
         if (!jogador.equals(getJogadorAtual())) {
             return false; // Não é a vez deste jogador
         }
@@ -114,6 +114,10 @@ public class GerenciadorJogo {
     // Metodo responsavel por inverter o sentido do jogo
     public void inverterSentido(){
         sentidoHorario = !sentidoHorario;
+
+        if(jogadores.size() == 2){
+            pularVez();
+        }
     }
 
     // Metodo responsavel por forcar o proximo jogador a comprar cartas

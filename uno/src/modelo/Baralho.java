@@ -26,11 +26,11 @@ public abstract class Baralho {
 
     public Carta comprarCarta(){
         
-            if(cartas.isEmpty()){
-                // Se o baralho acabar, em um jogo real nós reabasteceríamos com o descarte.
+        if(cartas.isEmpty()){
+            // Se o baralho acabar, em um jogo real nós reabasteceríamos com o descarte.
             // Por enquanto, vamos apenas evitar que quebre retornando null.
-                return null;
-            }
+            return null;
+        }
 
         return cartas.remove(cartas.size() - 1);
     }
