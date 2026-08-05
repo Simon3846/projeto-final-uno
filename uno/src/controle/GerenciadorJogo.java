@@ -8,14 +8,17 @@ import modelo.*;
 public class GerenciadorJogo {
 
     private List <Jogador> jogadores;
-    private Baralho baralho;
+    private Baralho baralho; // Polimorfismo
     private Stack<Carta> descarte;
     private int indiceJogadorAtual;
     private boolean sentidoHorario;
 
+    // Construtor do GerenciadorJogo
     public GerenciadorJogo(List<String> nomesJogadores, Baralho baralhoEscolhido){
        
         this.jogadores = new ArrayList<>();
+        
+        // Adiciona os jogadores à lista de jogadores
         for(String nome : nomesJogadores){
             this.jogadores.add(new Jogador(nome));
         }
@@ -28,9 +31,10 @@ public class GerenciadorJogo {
         iniciarPartida();
     }
 
+    // Método responsável por preparar o jogo
     private void iniciarPartida(){
-        // Distribuir 7 cartas para cada jogador
         
+        // Distribuir 7 cartas para cada jogador
         for(int i = 0; i < 7; i++){
             for(Jogador j : jogadores){
                 j.adicionarCarta(baralho.comprarCarta());
@@ -39,6 +43,12 @@ public class GerenciadorJogo {
 
         // Colocar a primeira carta no descarte
         Carta cartaInicial = baralho.comprarCarta();
+
+        // Casa o primeira carta seja um Coringa, compra outra carta até que seja uma carta normal
+        while (cartaInicial instanceof CartaAcao) {
+            cartaInicial = baralho.comprarCarta();
+        }
+
         descarte.push(cartaInicial);
     }
 
