@@ -28,7 +28,6 @@ public class CartaCoringa extends Carta{
         // Se for uma coringa +4 (ou joker vermelho)
         if(getValor().equals("+4") || getValor().equalsIgnoreCase("Joker Vermelho")){
             gerenciador.forcarCartas(4);
-            gerenciador.pularVez();
 
         }
 
