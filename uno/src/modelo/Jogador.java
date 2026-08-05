@@ -22,7 +22,6 @@ public class Jogador {
     }
 
     // Adicionar uma carta a mao do jogador
-
     public void adicionarCarta(Carta carta){
         mao.add(carta);
     }
