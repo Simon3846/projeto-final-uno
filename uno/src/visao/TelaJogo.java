@@ -2,7 +2,6 @@ package visao;
 
 import controle.GerenciadorJogo;
 import modelo.Carta;
-import modelo.CartaCoringa;
 import modelo.Jogador;
 
 import javax.swing.*;
