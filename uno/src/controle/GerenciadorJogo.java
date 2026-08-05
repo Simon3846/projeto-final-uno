@@ -1,6 +1,7 @@
 package controle;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Stack;
 import modelo.*;
@@ -44,7 +45,7 @@ public class GerenciadorJogo {
         // Colocar a primeira carta no descarte
         Carta cartaInicial = baralho.comprarCarta();
 
-        // Casa o primeira carta seja um Coringa, compra outra carta até que seja uma carta normal
+        // Caso a primeira carta seja uma carta de ação
         while (cartaInicial instanceof CartaAcao) {
             cartaInicial = baralho.comprarCarta();
         }
@@ -60,14 +61,15 @@ public class GerenciadorJogo {
         return descarte.peek();
     }
 
-    // passa a vez para o próximo jogador, considerando o sentido do jogo
+    // Metodo responsavel por passar para o proximo jogador
     public void proximoTurno(){
         int passo = sentidoHorario ? 1 : -1;
         indiceJogadorAtual = (indiceJogadorAtual + passo + jogadores.size()) % jogadores.size();
     }
 
-    // Ação: Tentar jogar uma carta na mão do jogador atual
+    // Metodo responsavel por jogar uma carta
     public boolean jogarCarta(Jogador jogador, Carta carta) {
+        
         if (!jogador.equals(getJogadorAtual())) {
             return false; // Não é a vez deste jogador
         }
@@ -87,28 +89,34 @@ public class GerenciadorJogo {
         return false; // A carta não pode ser jogada
     }
 
+    // Metodo responsavel por comprar uma carta
     public Carta comprarCarta(Jogador jogador){
+        
         // Verifica se é a vez do jogador
         if(!jogador.equals(getJogadorAtual())){
             return null;
         }
 
-        Carta NovaCarta = baralho.comprarCarta();
-        if(NovaCarta != null){
-            jogador.adicionarCarta(NovaCarta);
+        Carta novaCarta = baralho.comprarCarta();
+        if(novaCarta != null){
+            jogador.adicionarCarta(novaCarta);
         }
 
-        return NovaCarta;
+        return novaCarta;
     }
 
+    // Metodo responsavel por pular a vez do jogador atual
     public void pularVez(){
         proximoTurno(); // Pula o jogador atual
+        proximoTurno(); // Passa para o próximo jogador
     }
 
+    // Metodo responsavel por inverter o sentido do jogo
     public void inverterSentido(){
         sentidoHorario = !sentidoHorario;
     }
 
+    // Metodo responsavel por forcar o proximo jogador a comprar cartas
     public void forcarCartas(int quantidade){
 
         int passo = sentidoHorario ? 1 : -1;
@@ -122,10 +130,12 @@ public class GerenciadorJogo {
                 proximo.adicionarCarta(c);
             }
         }
+
+        pularVez();
     }
 
     public List<Jogador> getJogadores(){
-        return jogadores;
+        return Collections.unmodifiableList(jogadores);
     }
 
 }

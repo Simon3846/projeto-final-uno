@@ -11,7 +11,6 @@ import java.awt.*;
 public class TelaJogo extends JFrame {
 
     private GerenciadorJogo gerenciador;
-    
     private JLabel lblTurno;
     private JLabel lblCartaTopo;
     private JPanel panelMaoJogador;
