@@ -1,15 +1,6 @@
-
-// BESEADO NO MODELO MVC (MODEL-VIEW-CONTROLLER)
-
-/*
-    Modelo: sera aqui onde vai ficar a logica do jogo, cartas, baralhos, jogadores
-*/
-
 package modelo;
 
-
 // Abstract representa um modelo
-
 public abstract class Carta {
     private String cor; // Representar as cores
     private String valor; // Representar os numeros
