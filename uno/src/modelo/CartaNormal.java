@@ -1,5 +1,7 @@
 package modelo;
 
+import controle.GerenciadorJogo;
+
 public class CartaNormal extends Carta{
     
     public CartaNormal(String cor, String valor){
@@ -8,8 +10,11 @@ public class CartaNormal extends Carta{
 
     @Override
     public void aplicarEfeito(Object jogo){
-        // Cartas normais não alteram o fluxo do jogo, apenas são descartadas.
-        // O efeito é "vazio".
-        
+
+        GerenciadorJogo gerenciador =
+                (GerenciadorJogo) jogo;
+
+        gerenciador.proximoTurno();
+
     }
 }

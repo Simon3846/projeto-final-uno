@@ -2,6 +2,7 @@ package visao;
 
 import controle.GerenciadorJogo;
 import modelo.Carta;
+import modelo.CartaCoringa;
 import modelo.Jogador;
 
 import javax.swing.*;
@@ -13,240 +14,419 @@ public class TelaJogo extends JFrame {
     private GerenciadorJogo gerenciador;
     private JLabel lblTurno;
     private CartaVisual cartaTopoVisual;
-    private JPanel panelMaoJogador;
+    private MaoJogadorPanel panelMaoJogador;
     private JButton btnComprar;
+    private JButton btnPassar;
 
-    public TelaJogo(GerenciadorJogo gerenciador) {
+
+    public TelaJogo(GerenciadorJogo gerenciador){
+
         this.gerenciador = gerenciador;
 
-        // Configurações da Janela
+
         setTitle("Partida de UNO");
-        setSize(900, 650); // Aumentamos o tamanho para ficar bem espaçoso
+        setSize(900,650);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLocationRelativeTo(null);
-        setLayout(new BorderLayout(15, 15));
-        
-        // Fundo geral da janela num tom cinza escuro elegante
-        getContentPane().setBackground(new Color(35, 35, 35));
 
-        // 1. Painel Superior: Turno do Jogador
-        lblTurno = new JLabel("", SwingConstants.CENTER);
-        lblTurno.setFont(new Font("Arial", Font.BOLD, 22));
+        setLayout(new BorderLayout(15,15));
+
+        getContentPane()
+                .setBackground(new Color(35,35,35));
+
+
+
+        // TOPO
+
+        lblTurno = new JLabel(
+                "",
+                SwingConstants.CENTER
+        );
+
+        lblTurno.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        22
+                )
+        );
+
         lblTurno.setForeground(Color.WHITE);
+
         lblTurno.setOpaque(true);
-        lblTurno.setBackground(new Color(50, 50, 50));
-        lblTurno.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-        add(lblTurno, BorderLayout.NORTH);
 
-        // 2. Painel Central: Mesa / Carta do Topo
-        panelMesa = new JPanel(new GridLayout(2, 1, 15, 15));
-        panelMesa.setOpaque(false); // Transparente para pegar o fundo escuro
+        lblTurno.setBackground(
+                new Color(50,50,50)
+        );
 
-        Carta cartaInicial = gerenciador.getCartaTopo();
+        add(
+                lblTurno,
+                BorderLayout.NORTH
+        );
 
-        cartaTopoVisual = new CartaVisual(cartaInicial);
 
-        btnComprar = new JButton("COMPRAR CARTA");
-        btnComprar.setFont(new Font("Arial", Font.BOLD, 18));
-        btnComprar.setBackground(new Color(230, 230, 230));
-        btnComprar.setFocusPainted(false);
-        btnComprar.addActionListener(e -> acaoComprarCarta());
 
-        JPanel panelBotaoComprar = new JPanel();
-        panelBotaoComprar.setOpaque(false);
-        panelBotaoComprar.add(btnComprar);
+        // MESA
 
-        panelMesa.add(cartaTopoVisual);
-        panelMesa.add(panelBotaoComprar);
-        add(panelMesa, BorderLayout.CENTER);
+        panelMesa = new JPanel();
 
-        // 3. Painel Inferior: Mão do Jogador
-        panelMaoJogador = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 10));
-        panelMaoJogador.setBackground(new Color(45, 45, 45));
+        panelMesa.setLayout(
+                new BoxLayout(
+                        panelMesa,
+                        BoxLayout.Y_AXIS
+                )
+        );
 
-        JScrollPane scrollMao = new JScrollPane(panelMaoJogador);
-        scrollMao.setBorder(BorderFactory.createTitledBorder(
-            BorderFactory.createLineBorder(Color.WHITE), 
-            "Sua Mão (Clique na carta para jogar)", 
-            0, 0, 
-            new Font("Arial", Font.BOLD, 14), 
-            Color.WHITE
-        ));
-        scrollMao.setPreferredSize(new Dimension(880, 200)); // Altura suficiente para exibir as cartas grandes
-        scrollMao.setOpaque(false);
-        scrollMao.getViewport().setOpaque(false);
+        panelMesa.setOpaque(false);
 
-        add(scrollMao, BorderLayout.SOUTH);
+
+
+        cartaTopoVisual =
+                new CartaVisual(
+                        gerenciador.getCartaTopo()
+                );
+
+        cartaTopoVisual.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
+
+
+         btnComprar = new JButton("COMPRAR CARTA");
+
+        btnComprar.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        16
+                )
+        );
+
+        btnComprar.addActionListener(
+                e -> acaoComprarCarta()
+        );
+
+
+        btnPassar = new JButton("PASSAR TURNO");
+
+        btnPassar.setFont(
+                new Font(
+                        "Arial",
+                        Font.BOLD,
+                        16
+                )
+        );
+
+        btnPassar.addActionListener(
+                e -> acaoPassarTurno()
+        );
+
+
+        panelMesa.add(
+                cartaTopoVisual
+        );
+
+
+        panelMesa.add(
+                Box.createVerticalStrut(20)
+        );
+
+
+        JPanel painelBotoes = new JPanel();
+
+        painelBotoes.setOpaque(false);
+
+        painelBotoes.add(btnComprar);
+        painelBotoes.add(btnPassar);
+
+
+panelMesa.add(painelBotoes);
+
+
+        add(
+                panelMesa,
+                BorderLayout.CENTER
+        );
+
+
+
+        // MÃO
+
+        panelMaoJogador =
+                new MaoJogadorPanel();
+
+
+        JScrollPane scroll =
+                new JScrollPane(
+                        panelMaoJogador
+                );
+
+
+        scroll.setPreferredSize(
+                new Dimension(
+                        880,
+                        200
+                )
+        );
+
+
+        add(
+                scroll,
+                BorderLayout.SOUTH
+        );
+
 
         atualizarTela();
+
     }
 
-    private void atualizarTela() {
-        Jogador atual = gerenciador.getJogadorAtual();
-        Carta topo = gerenciador.getCartaTopo();
 
-        lblTurno.setText("Vez de: " + atual.getNome());
 
-        panelMesa.remove(cartaTopoVisual);
 
-        cartaTopoVisual = new CartaVisual(topo);
+    private void atualizarTela(){
 
-        panelMesa.add(cartaTopoVisual, 0);
+
+        Jogador atual =
+                gerenciador.getJogadorAtual();
+
+
+
+        lblTurno.setText(
+                "Vez de: "
+                + atual.getNome()
+        );
+
+
+
+        panelMesa.remove(
+                cartaTopoVisual
+        );
+
+
+        cartaTopoVisual =
+                new CartaVisual(
+                        gerenciador.getCartaTopo()
+                );
+
+
+        cartaTopoVisual.setAlignmentX(
+                Component.CENTER_ALIGNMENT
+        );
+
+
+        panelMesa.add(
+                cartaTopoVisual,
+                0
+        );
+
+
+
+        panelMaoJogador.atualizarMao(
+                atual.getMao(),
+                this::acaoJogarCarta
+        );
+
 
         panelMesa.revalidate();
         panelMesa.repaint();
 
-        // Limpa e redesenha a mão
-        panelMaoJogador.removeAll();
-
-        for (Carta carta : atual.getMao()) {
-
-            CartaVisual cartaVisual = new CartaVisual(carta);
+    }
 
 
-            cartaVisual.addMouseListener(
-                new java.awt.event.MouseAdapter() {
 
-                    @Override
-                    public void mouseClicked(
-                            java.awt.event.MouseEvent e
-                    ){
-                        acaoJogarCarta(carta);
-                    }
 
-                }
+    private void acaoJogarCarta(Carta carta){
+
+
+        Jogador atual =
+                gerenciador.getJogadorAtual();
+
+
+
+        // CORINGA
+
+        if(carta instanceof CartaCoringa){
+
+
+            String corTopo =
+                    gerenciador
+                    .getCartaTopo()
+                    .getCor();
+
+
+
+            String[] cores;
+
+
+
+            if(
+                "Copas".equalsIgnoreCase(corTopo)
+                ||
+                "Ouros".equalsIgnoreCase(corTopo)
+                ||
+                "Paus".equalsIgnoreCase(corTopo)
+                ||
+                "Espadas".equalsIgnoreCase(corTopo)
+            ){
+
+                cores = new String[]{
+                        "Copas",
+                        "Ouros",
+                        "Paus",
+                        "Espadas"
+                };
+
+
+            }else{
+
+
+                cores = new String[]{
+                        "Vermelho",
+                        "Amarelo",
+                        "Verde",
+                        "Azul"
+                };
+
+            }
+
+
+
+            String escolhida =
+                    (String) JOptionPane.showInputDialog(
+                            this,
+                            "Escolha a cor:",
+                            "Coringa",
+                            JOptionPane.PLAIN_MESSAGE,
+                            null,
+                            cores,
+                            cores[0]
+                    );
+
+
+
+            if(escolhida == null)
+                return;
+
+
+
+            ((CartaCoringa)carta)
+                    .setCorEscolhida(escolhida);
+
+        }
+
+
+
+        if(
+    gerenciador.jogarCarta(
+        atual,
+        carta
+    )
+){
+
+    if(atual.venceu()){
+
+        JOptionPane.showMessageDialog(
+                this,
+                atual.getNome()+" venceu!"
+        );
+
+        dispose();
+        return;
+    }
+
+
+    atualizarTela();
+
+        }else{
+
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Carta inválida!"
             );
 
-
-            panelMaoJogador.add(cartaVisual);
         }
 
-        panelMaoJogador.revalidate();
-        panelMaoJogador.repaint();
     }
 
-    // Método auxiliar para pintar os componentes com as cores das cartas
-    private void estilizarElementoPorCor(JComponent componente, String cor) {
-        componente.setOpaque(true);
 
-        switch (cor.toLowerCase()) {
-            case "vermelho":
-            case "copas":
-                componente.setBackground(new Color(215, 38, 56)); // Vermelho UNO
-                componente.setForeground(Color.WHITE);
-                break;
-            case "verde":
-            case "paus":
-                componente.setBackground(new Color(85, 170, 85)); // Verde UNO
-                componente.setForeground(Color.WHITE);
-                break;
-            case "azul":
-            case "espadas":
-                componente.setBackground(new Color(9, 114, 212)); // Azul UNO
-                componente.setForeground(Color.WHITE);
-                break;
-            case "amarelo":
-            case "ouros":
-                componente.setBackground(new Color(255, 170, 0)); // Amarelo UNO
-                componente.setForeground(Color.BLACK); // Texto escuro para contrastar
-                break;
-            default: // Caso seja Coringa/Especial
-                componente.setBackground(new Color(100, 50, 150));
-                componente.setForeground(Color.WHITE);
-                break;
-        }
-    }
 
-    private void acaoJogarCarta(Carta carta) {
-    Jogador atual = gerenciador.getJogadorAtual();
 
-    // Se a carta for um Coringa, abre a janela para escolher a cor
-    if (carta instanceof modelo.CartaCoringa) {
-        String[] opcoesCores;
-        
-        // Verifica o tipo de baralho na mesa para oferecer os nomes certos (Naipe ou Cor)
-        String corTopo = gerenciador.getCartaTopo().getCor();
-        if (corTopo.equals("Copas") || corTopo.equals("Ouros") || 
-            corTopo.equals("Paus") || corTopo.equals("Espadas")) {
-            opcoesCores = new String[]{"Copas", "Ouros", "Paus", "Espadas"};
-        } else {
-            opcoesCores = new String[]{"Vermelho", "Amarelo", "Verde", "Azul"};
-        }
+    private void acaoComprarCarta(){
 
-        String corSelecionada = (String) JOptionPane.showInputDialog(
-            this,
-            "Escolha a nova cor para o jogo:",
-            "Seleção de Cor (Coringa)",
-            JOptionPane.QUESTION_MESSAGE,
-            null,
-            opcoesCores,
-            opcoesCores[0]
-        );
 
-        // Se o jogador cancelar a escolha, interrompe a jogada
-        if (corSelecionada == null) {
-            return; 
-        }
+        Jogador atual =
+                gerenciador.getJogadorAtual();
 
-        ((modelo.CartaCoringa) carta).setCorEscolhida(corSelecionada);
-    }
 
-    // Tenta realizar a jogada
-    if (gerenciador.jogarCarta(atual, carta)) {
-        if (atual.venceu()) {
-            JOptionPane.showMessageDialog(this, "Parabéns! " + atual.getNome() + " VENCEU O JOGO!");
-            this.dispose();
+
+        Carta comprada =
+                gerenciador.comprarCarta(atual);
+
+
+
+        if(comprada == null){
+
+
+            JOptionPane.showMessageDialog(
+                    this,
+                    "Baralho vazio!"
+            );
+
             return;
+
         }
-        gerenciador.proximoTurno();
-        atualizarTela();
-    } else {
-        JOptionPane.showMessageDialog(this, 
-            "Jogada Inválida! A carta precisa ter a mesma cor/naipe ou mesmo valor da mesa.", 
-            "Aviso", 
-            JOptionPane.WARNING_MESSAGE);
-    }
-}
-
-   private void acaoComprarCarta() {
-
-    Jogador atual = gerenciador.getJogadorAtual();
-
-    Carta comprada = gerenciador.comprarCarta(atual);
-    if (comprada != null) {
-
-        JOptionPane.showMessageDialog(
-                this,
-                atual.getNome() + " comprou: "
-                + comprada.getCor() + " "
-                + comprada.getValor()
-        );
 
 
-        atualizarTela();
+
+        int resposta =
+                JOptionPane.showConfirmDialog(
+                        this,
+                        "Carta comprada: "
+                        +
+                        comprada
+                        +
+                        "\nDeseja jogar?",
+                        "Comprar",
+                        JOptionPane.YES_NO_OPTION
+                );
 
 
-        int opcao = JOptionPane.showConfirmDialog(
-                this,
-                "Deseja jogar a carta comprada?",
-                "Continuar jogando",
-                JOptionPane.YES_NO_OPTION
-        );
+
+        if(resposta == JOptionPane.YES_OPTION){
 
 
-        if(opcao == JOptionPane.NO_OPTION){
+            if(
+                gerenciador.jogarCarta(
+                        atual,
+                        comprada
+                )
+            ){
+
+                gerenciador.proximoTurno();
+
+            }
+
+
+        }else{
+
 
             gerenciador.proximoTurno();
-            atualizarTela();
 
         }
 
-    } else {
 
-        JOptionPane.showMessageDialog(
-                this,
-                "O baralho está vazio!"
-        );
-     }
+
+        atualizarTela();
+
     }
+
+    private void acaoPassarTurno(){
+
+    gerenciador.proximoTurno();
+
+    atualizarTela();
+
+    }
+
 }
