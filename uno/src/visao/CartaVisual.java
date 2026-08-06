@@ -161,8 +161,12 @@ public class CartaVisual extends JPanel {
 
         int tamanhoFonte = 22;
 
+        int tamanho = carta.getValor().length();
 
-        if(valor.length() > 2){
+        if (tamanho > 10) {
+            tamanhoFonte = 10;
+        } 
+        else if (tamanho > 5) {
             tamanhoFonte = 14;
         }
 
