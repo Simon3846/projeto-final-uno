@@ -37,7 +37,7 @@ public class TelaInicial extends JFrame {
 
     private void configurarJanela() {
         setTitle("UNO");
-        setSize(900, 650);
+        setSize(900, 750);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);

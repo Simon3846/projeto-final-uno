@@ -9,9 +9,10 @@ import java.awt.*;
 
 public class TelaJogo extends JFrame {
 
+    private JPanel panelMesa;
     private GerenciadorJogo gerenciador;
     private JLabel lblTurno;
-    private JLabel lblCartaTopo;
+    private CartaVisual cartaTopoVisual;
     private JPanel panelMaoJogador;
     private JButton btnComprar;
 
@@ -38,13 +39,12 @@ public class TelaJogo extends JFrame {
         add(lblTurno, BorderLayout.NORTH);
 
         // 2. Painel Central: Mesa / Carta do Topo
-        JPanel panelMesa = new JPanel(new GridLayout(2, 1, 15, 15));
+        panelMesa = new JPanel(new GridLayout(2, 1, 15, 15));
         panelMesa.setOpaque(false); // Transparente para pegar o fundo escuro
 
-        lblCartaTopo = new JLabel("", SwingConstants.CENTER);
-        lblCartaTopo.setFont(new Font("Arial", Font.BOLD, 26));
-        lblCartaTopo.setOpaque(true);
-        lblCartaTopo.setBorder(BorderFactory.createLineBorder(Color.WHITE, 3));
+        Carta cartaInicial = gerenciador.getCartaTopo();
+
+        cartaTopoVisual = new CartaVisual(cartaInicial);
 
         btnComprar = new JButton("COMPRAR CARTA");
         btnComprar.setFont(new Font("Arial", Font.BOLD, 18));
@@ -56,7 +56,7 @@ public class TelaJogo extends JFrame {
         panelBotaoComprar.setOpaque(false);
         panelBotaoComprar.add(btnComprar);
 
-        panelMesa.add(lblCartaTopo);
+        panelMesa.add(cartaTopoVisual);
         panelMesa.add(panelBotaoComprar);
         add(panelMesa, BorderLayout.CENTER);
 
@@ -87,24 +87,38 @@ public class TelaJogo extends JFrame {
 
         lblTurno.setText("Vez de: " + atual.getNome());
 
-        // Estiliza a carta da Mesa (Topo)
-        lblCartaTopo.setText(topo.getValor());
-        estilizarElementoPorCor(lblCartaTopo, topo.getCor());
+        panelMesa.remove(cartaTopoVisual);
+
+        cartaTopoVisual = new CartaVisual(topo);
+
+        panelMesa.add(cartaTopoVisual, 0);
+
+        panelMesa.revalidate();
+        panelMesa.repaint();
 
         // Limpa e redesenha a mão
         panelMaoJogador.removeAll();
 
         for (Carta carta : atual.getMao()) {
-            JButton btnCarta = new JButton(carta.getValor());
-            btnCarta.setFont(new Font("Arial", Font.BOLD, 18));
-            btnCarta.setPreferredSize(new Dimension(100, 130)); // Tamanho proporcional a uma carta real
-            btnCarta.setFocusPainted(false);
 
-            // Aplica as cores na carta do jogador
-            estilizarElementoPorCor(btnCarta, carta.getCor());
+            CartaVisual cartaVisual = new CartaVisual(carta);
 
-            btnCarta.addActionListener(e -> acaoJogarCarta(carta));
-            panelMaoJogador.add(btnCarta);
+
+            cartaVisual.addMouseListener(
+                new java.awt.event.MouseAdapter() {
+
+                    @Override
+                    public void mouseClicked(
+                            java.awt.event.MouseEvent e
+                    ){
+                        acaoJogarCarta(carta);
+                    }
+
+                }
+            );
+
+
+            panelMaoJogador.add(cartaVisual);
         }
 
         panelMaoJogador.revalidate();
@@ -194,16 +208,45 @@ public class TelaJogo extends JFrame {
     }
 }
 
-    private void acaoComprarCarta() {
-        Jogador atual = gerenciador.getJogadorAtual();
-        Carta comprada = gerenciador.comprarCarta(atual);
+   private void acaoComprarCarta() {
 
-        if (comprada != null) {
-            JOptionPane.showMessageDialog(this, atual.getNome() + " comprou: " + comprada.getCor() + " " + comprada.getValor());
+    Jogador atual = gerenciador.getJogadorAtual();
+
+    Carta comprada = gerenciador.comprarCarta(atual);
+    if (comprada != null) {
+
+        JOptionPane.showMessageDialog(
+                this,
+                atual.getNome() + " comprou: "
+                + comprada.getCor() + " "
+                + comprada.getValor()
+        );
+
+
+        atualizarTela();
+
+
+        int opcao = JOptionPane.showConfirmDialog(
+                this,
+                "Deseja jogar a carta comprada?",
+                "Continuar jogando",
+                JOptionPane.YES_NO_OPTION
+        );
+
+
+        if(opcao == JOptionPane.NO_OPTION){
+
             gerenciador.proximoTurno();
             atualizarTela();
-        } else {
-            JOptionPane.showMessageDialog(this, "O baralho está vazio!");
+
         }
+
+    } else {
+
+        JOptionPane.showMessageDialog(
+                this,
+                "O baralho está vazio!"
+        );
+     }
     }
 }
